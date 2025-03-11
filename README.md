@@ -27,3 +27,5 @@ dontnet new list
 
 docker build -t pms-test-nginx . # you can chose any name
 docker run -p 8080:8 pms-test-nginx 
+
+'''
