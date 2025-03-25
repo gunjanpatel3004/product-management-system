@@ -8,6 +8,22 @@ using API.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin() 
+                   .AllowAnyMethod() 
+                   .AllowAnyHeader(); 
+        });
+});
+//
+
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
@@ -40,7 +56,7 @@ builder.Services.AddAuthorization(
     options => {
         options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
         options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
-        options.AddPolicy("RequireHumanResourcesRole", policy => policy.RequireRole("HumanResources"));
+        options.AddPolicy("Sales", policy => policy.RequireRole("Sales"));
         // ...
     }
 );
@@ -57,6 +73,12 @@ builder.Services.AddSwaggerGen(); // API Documentation
 
 var app = builder.Build();
 
+// CORS only in development mode
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("AllowAllOrigins");
+}
+
 using (var scope = app.Services.CreateScope()){
 
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -69,8 +91,8 @@ using (var scope = app.Services.CreateScope()){
         await roleManager.CreateAsync(new IdentityRole("Admin"));
     }
 
-    if(!(await roleManager.RoleExistsAsync("HumanResources"))){
-        await roleManager.CreateAsync(new IdentityRole("HumanResources"));
+    if(!(await roleManager.RoleExistsAsync("Sales"))){
+        await roleManager.CreateAsync(new IdentityRole("Sales"));
     }
 }
 

@@ -11,6 +11,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     networks:
       - internal_network
+
   app:
     build:
       context: ./
@@ -21,6 +22,7 @@ services:
       - "80:80"
     networks:
       - internal_network
+
   db:
     image: postgres:latest
     restart: always
@@ -36,8 +38,10 @@ services:
       test: ["CMD", "pg_isready", "-U", "pms_user", "-d", "pms_db"]
       interval: 10s
       retries: 5
+
 volumes:
   pgdata:
+  
 networks:
   internal_network:
     driver: bridge

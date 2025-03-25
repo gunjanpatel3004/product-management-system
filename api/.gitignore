@@ -483,7 +483,5 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-
-# Ignore build artifacts
-[Bb]in/
-[Oo]bj/
+######
+*.db*
